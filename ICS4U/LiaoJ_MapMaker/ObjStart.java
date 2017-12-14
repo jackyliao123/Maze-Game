@@ -1,11 +1,12 @@
 // Jacky Liao
-// December 4, 2017
-// Map maker
+// December 12, 2017
+// Maze Game
 // ICS4U Ms.Strelkovska
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
+// The starting point of the game
 @ObjProperty(name = "Start", type = ObjProperty.Type.POINT)
 public class ObjStart extends WorldObject {
 	private static final long serialVersionUID = 4336170146506640705L;

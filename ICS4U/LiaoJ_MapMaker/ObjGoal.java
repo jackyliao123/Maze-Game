@@ -1,15 +1,17 @@
 // Jacky Liao
-// December 4, 2017
-// Map maker
+// December 12, 2017
+// Maze Game
 // ICS4U Ms.Strelkovska
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
+// The goal object in the game
 @ObjProperty(name = "Goal", type = ObjProperty.Type.POINT)
 public class ObjGoal extends WorldObject {
 	private static final long serialVersionUID = -5868188964991908566L;
 
+	// Radius of the goal
 	public static final double RADIUS = GamePanel.GRID_SIZE / 2.0;
 	public static final double RADIUS_SEL = RADIUS + 20;
 
@@ -28,6 +30,7 @@ public class ObjGoal extends WorldObject {
 		this.preserveColour = preserveColour;
 	}
 
+	// Point in object?
 	public boolean test(double nx, double ny) {
 		return (x - nx) * (x - nx) + (y - ny) * (y - ny) < RADIUS * RADIUS;
 	}
@@ -42,7 +45,9 @@ public class ObjGoal extends WorldObject {
 	}
 
 	public void render(Graphics2D g2d, GamePanel panel) {
+		// Try drawing
 		float length = (float)(Math.PI * RADIUS / 8);
+		// Draw different styles based on different settings
 		g2d.setStroke(new BasicStroke(10.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[]{length, length}, (float)((System.nanoTime() / (gotoLabel.length() == 0 ? 1e9 : 4e9)) % 1 * Math.PI * RADIUS)));
 		Ellipse2D ellipse = new Ellipse2D.Double(x - RADIUS, y - RADIUS, RADIUS * 2, RADIUS * 2);
 		if(gotoLabel.length() != 0 && !preserveColour) {
@@ -52,6 +57,7 @@ public class ObjGoal extends WorldObject {
 			g2d.setColor(new Color(clr.getRed(), clr.getGreen(), clr.getBlue(), 128));
 		}
 		g2d.draw(ellipse);
+		// Draw the label of the jump, if in edit mode
 		if(gotoLabel != null) {
 			FontMetrics fm = g2d.getFontMetrics();
 			g2d.setColor(Color.white);
@@ -60,6 +66,7 @@ public class ObjGoal extends WorldObject {
 	}
 
 	public void renderSelection(Graphics2D g2d, GamePanel panel) {
+		// Draw the selection box
 		Ellipse2D ellipse = new Ellipse2D.Double(x - RADIUS_SEL, y - RADIUS_SEL, RADIUS_SEL * 2, RADIUS_SEL * 2);
 		g2d.setColor(new Color(255, 255, 255, 128));
 		g2d.fill(ellipse);

@@ -1,6 +1,6 @@
 // Jacky Liao
-// December 4, 2017
-// Map maker
+// December 12, 2017
+// Maze Game
 // ICS4U Ms.Strelkovska
 
 import javax.swing.*;
@@ -34,6 +34,7 @@ public class MapMaker {
 		panel.setPreferredSize(new Dimension(960, 540));
 		frame.add(panel);
 
+		// Menu bars
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menuFile = new JMenu("File");
 		menuBar.add(menuFile);
@@ -63,9 +64,9 @@ public class MapMaker {
 		menuEdit.add(itemUndo);
 		menuEdit.add(itemRedo);
 
-
 		frame.setJMenuBar(menuBar);
 
+		// Right control panel
 		JPanel panelControl = new JPanel();
 
 		panelControl.setLayout(new GridBagLayout());
@@ -77,12 +78,14 @@ public class MapMaker {
 
 		JTabbedPane tabTools = new JTabbedPane();
 
+		// Generate a panel for each one of the objects
 		for(int i = 0; i < GamePanel.classes.length; ++i) {
 			JPanel panel = new JPanel();
 			ObjProperty property = generatePanel(panel, GamePanel.classes[i], GamePanel.defaultObject[i]);
 			tabTools.addTab(property.name(), panel);
 		}
 
+		// When tab changes, update the tool as well
 		tabTools.addChangeListener(e -> {
 			if(panel.play) {
 				panel.lastEditMode = tabTools.getSelectedIndex();
@@ -96,15 +99,14 @@ public class MapMaker {
 		constraints.gridy++;
 		panelControl.add(panelNewObject, constraints);
 
+		// Global world properties
 		properties = new JPanel();
 		properties.setBorder(BorderFactory.createTitledBorder("Properties"));
 		generatePanel(properties, DummyProperties.class, panel.properties);
 		constraints.gridy++;
 		panelControl.add(properties, constraints);
 
-		JPanel panelPlay = new JPanel();
-		panelPlay.setBorder(BorderFactory.createTitledBorder("Play"));
-
+		// Play button
 		playButton = new JButton("Play");
 		playButton.addActionListener(e -> {
 			if(panel.play) {
@@ -113,16 +115,19 @@ public class MapMaker {
 				panel.enterPlay();
 			}
 		});
-		panelPlay.add(playButton);
+
+		playButton.setPreferredSize(new Dimension(220, 50));
 
 		constraints.gridy++;
-		panelControl.add(panelPlay, constraints);
+		panelControl.add(playButton, constraints);
 
+		// Filler so that GridBagLayout is happy
 		JPanel filler = new JPanel();
 		constraints.gridy++;
 		constraints.weighty = 1.0;
 		panelControl.add(filler, constraints);
 
+		// Scroll panel for the right panel
 		JScrollPane scrollPane = new JScrollPane(panelControl);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		frame.add(scrollPane, BorderLayout.EAST);
@@ -133,21 +138,25 @@ public class MapMaker {
 		frame.setVisible(true);
 	}
 
+	// Generate a panel based on the annotations on the class
 	private ObjProperty generatePanel(JPanel panel, Class clazz, Object object) {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints cons = new GridBagConstraints();
 		cons.fill = GridBagConstraints.HORIZONTAL;
 		cons.insets = new Insets(5, 0, 5, 0);
 		ObjProperty property = (ObjProperty)clazz.getAnnotation(ObjProperty.class);
+		// Go through each one of the field
 		for(Field field : clazz.getDeclaredFields()) {
 			Annotation prop = field.getAnnotation(GUIProperty.class);
 			if(prop != null) {
+				// If the field has the GUIProperty annotation
 				GUIProperty guiProp = (GUIProperty) prop;
 				JPanel pp = new JPanel();
 				pp.setLayout(new BorderLayout());
 				pp.setBorder(BorderFactory.createTitledBorder(guiProp.name()));
 				++cons.gridy;
 				try {
+					// What type is it?
 					switch(guiProp.type()) {
 						case COLOR:
 							ColorChooser chooser = new ColorChooser();
@@ -201,6 +210,7 @@ public class MapMaker {
 								}
 							};
 							if(floating) {
+								// Field has type double
 								double l = guiProp.rangeL();
 								double h = guiProp.rangeH();
 								int mapped = (int) ((field.getDouble(object) - l) / (h - l) * 2147483647);
@@ -215,6 +225,7 @@ public class MapMaker {
 									update.accept(spinner.getValue());
 								});
 							} else {
+								// Field has type int
 								slider = new JSlider((int) guiProp.rangeL(), (int) guiProp.rangeH(), field.getInt(object));
 								spinner.setModel(new SpinnerNumberModel(field.getInt(object), guiProp.min(), guiProp.max(), 1));
 								slider.addChangeListener(e -> {
@@ -267,6 +278,7 @@ public class MapMaker {
 		return property;
 	}
 
+	// Open up the file save dialog
 	public void save(boolean saveAs) {
 		if(panel.file == null || saveAs) {
 			FileDialog fileDialog = new FileDialog(frame, "Save As", FileDialog.SAVE);
@@ -283,6 +295,7 @@ public class MapMaker {
 		}
 	}
 
+	// Open up the file open dialog
 	public void open() {
 		FileDialog fileDialog = new FileDialog(frame, "Open", FileDialog.LOAD);
 		fileDialog.setVisible(true);
@@ -302,6 +315,7 @@ public class MapMaker {
 	}
 
 	public static void main(String[] args) {
+		// Set some properties, for aesthetic and performance reasons
 		System.setProperty("sun.java2d.opengl","true");
 		UIManager.put("Slider.paintValue", false);
 		new MapMaker();

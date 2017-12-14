@@ -1,12 +1,19 @@
 // Jacky Liao
-// December 4, 2017
-// Map maker
+// December 12, 2017
+// Maze Game
 // ICS4U Ms.Strelkovska
 
+// A class to represent a collision
 public class Collision {
+
+	// Time of collision
 	public double time;
+
+	// Vector parallel to collision surface
 	public double px;
 	public double py;
+
+	// New location after collision
 	public double rx;
 	public double ry;
 
@@ -18,6 +25,7 @@ public class Collision {
 		this.ry = ry;
 	}
 
+	// Normalize the parallel vector
 	public Collision normalize() {
 		double len = Math.sqrt(px * px + py * py);
 		px /= len;

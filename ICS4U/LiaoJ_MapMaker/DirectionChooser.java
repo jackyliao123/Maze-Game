@@ -1,14 +1,24 @@
+// Jacky Liao
+// December 12, 2017
+// Maze Game
+// ICS4U Ms.Strelkovska
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 
+// A widget to choose angle
 public class DirectionChooser extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 
+	// The angle
 	public double ang;
+
+	// The listener that gets called when angle changes
 	public ActionListener listener;
 
+	// Some fixed dimensions for the widget
 	public static final double PX = 110;
 	public static final double PY = 50;
 	public static final double R = 50;
@@ -31,11 +41,19 @@ public class DirectionChooser extends JPanel implements MouseListener, MouseMoti
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setStroke(new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+		// Draw black background
 		g2d.setColor(Color.black);
 		g2d.fill(new Ellipse2D.Double(PX - R, PY - R, R2, R2));
+
+		// Draw center dot
 		g2d.setColor(Color.gray);
 		g2d.fill(new Ellipse2D.Double(PX - 10, PY - 10, 20, 20));
+
+		// Draw line
 		g2d.draw(new Line2D.Double(PX, PY, Math.cos(ang) * R + PX, Math.sin(ang) * R + PY));
+
+		// Draw text
 		g2d.setColor(Color.white);
 		FontMetrics fm = g2d.getFontMetrics();
 		String txt = String.format("%.2f", ang / Math.PI * 180);
@@ -66,6 +84,7 @@ public class DirectionChooser extends JPanel implements MouseListener, MouseMoti
 		}
 	}
 
+	// Notify that the angle has changed
 	public void callListener() {
 		if(listener != null) {
 			listener.actionPerformed(null);

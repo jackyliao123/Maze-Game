@@ -1,6 +1,12 @@
+// Jacky Liao
+// December 12, 2017
+// Maze Game
+// ICS4U Ms.Strelkovska
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
+// The orb object, to change player colour and unlock walls
 @ObjProperty(name = "Orb", type = ObjProperty.Type.POINT)
 public class ObjOrb extends WorldObject {
 
@@ -18,6 +24,7 @@ public class ObjOrb extends WorldObject {
 	@GUIProperty(type = GUIProperty.Type.STRING, name = "Unlock key")
 	public String unlock;
 
+	// Whether the orb has been used or not (don't serialize)
 	public transient boolean used;
 
 	public ObjOrb(double x, double y, int color, String unlock) {
@@ -27,6 +34,7 @@ public class ObjOrb extends WorldObject {
 		this.unlock = unlock;
 	}
 
+	// Point in object?
 	public boolean test(double nx, double ny) {
 		return (x - nx) * (x - nx) + (y - ny) * (y - ny) < GLOW_RADIUS * GLOW_RADIUS;
 	}
@@ -42,6 +50,7 @@ public class ObjOrb extends WorldObject {
 
 	public void render(Graphics2D g2d, GamePanel panel) {
 		if(!panel.play || !used) {
+			// Render the orb differently based on different configurations
 			Color clr = GamePanel.colors[color];
 			g2d.setColor(new Color(clr.getRed(), clr.getGreen(), clr.getBlue(), 0x80));
 			g2d.setStroke(new BasicStroke(10));
@@ -52,6 +61,7 @@ public class ObjOrb extends WorldObject {
 			}
 		}
 		if(!panel.play && unlock.length() != 0) {
+			// Render text if in edit mode
 			FontMetrics fm = g2d.getFontMetrics();
 			g2d.setColor(Color.white);
 			g2d.drawString(unlock, (int) x - fm.stringWidth(unlock) / 2, (int) y + 40);
@@ -59,6 +69,7 @@ public class ObjOrb extends WorldObject {
 	}
 
 	public void renderSelection(Graphics2D g2d, GamePanel panel) {
+		// Render selection highlighting box
 		Ellipse2D ellipse = new Ellipse2D.Double(x - RADIUS_SEL, y - RADIUS_SEL, RADIUS_SEL * 2, RADIUS_SEL * 2);
 		g2d.setColor(new Color(255, 255, 255, 128));
 		g2d.fill(ellipse);
